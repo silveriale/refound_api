@@ -1,0 +1,18 @@
+// Arquivo de configuração do TypeScript: controla como o código é compilado e validado.
+{
+  "compilerOptions": {
+    "target": "es2022", // Define a versão de JavaScript que o TS deve gerar (ES2022)
+    "lib": ["ES2023"], // Bibliotecas padrão incluídas (ex.: métodos de ES2023)
+
+    "paths": {
+      "@/*": ["./src/*"] // Cria um alias: "@" aponta para a pasta ./src
+    },
+
+    "module": "Node16", // Define o sistema de módulos compatível com Node.js 16
+    "esModuleInterop": true, // Permite usar imports padrão em módulos CommonJS (ex.: express)
+    "forceConsistentCasingInFileNames": true, // Garante consistência entre maiúsculas/minúsculas nos imports
+
+    "strict": true, // Ativa todas as verificações estritas de tipagem
+    "skipLibCheck": true // Pula a checagem de tipos dentro de node_modules (compila mais rápido)
+  }
+}

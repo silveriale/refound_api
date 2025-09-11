@@ -2,19 +2,19 @@
   "name": "refound_api",
   "version": "1.0.0",
   "description": "API de solicitação de reembolso",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts"
   },
   "author": "Leticia Costa",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^5.1.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.3",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }

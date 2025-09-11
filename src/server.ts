@@ -6,5 +6,5 @@ const PORT = 3333; // Define a porta onde o servidor vai rodar
 
 app.listen(
   PORT,
-  () => console.log(`Server is ruinning on port ${PORT}`) // Inicia o servidor e mostra no console a porta em uso
+  () => console.log(`Servidor está rodando na porta ${PORT}`) // Inicia o servidor e mostra no console a porta em uso
 );

@@ -1,9 +1,55 @@
+// Este arquivo define o schema do Prisma, que descreve como o ORM gera o cliente, se conecta ao banco de dados e mapeia os modelos de dados (tabelas, enums e relacionamentos).
+
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"   // Gera o cliente Prisma em JavaScript/TypeScript
+  output   = "../src/generated/prisma" // Define a pasta de saída para o cliente gerado
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"            // Define o banco de dados usado (aqui, SQLite)
+  url      = env("DATABASE_URL") // URL de conexão retirada da variável de ambiente
+}
+
+enum UserRole {
+  employee // Representa um usuário funcionário
+  manager  // Representa um usuário gerente
+}
+
+enum Category {
+  food           // Categoria alimentação
+  others         // Categoria outros
+  services       // Categoria serviços
+  transport      // Categoria transporte
+  accommodation  // Categoria hospedagem
+}
+
+model User {
+  id String @id @default(uuid())              // Identificador único (UUID) como chave primária
+  name String                                 // Nome do usuário
+  email String @unique                        // E-mail único para cada usuário
+  password String                             // Senha do usuário
+
+  role UserRole @default(employee)            // Cargo do usuário (padrão: employee)
+  refunds Refunds[]                           // Relacionamento 1:N com Refunds
+
+  createdAt DateTime @default(now()) @map("created_at") // Data de criação, mapeada para "created_at"
+  updatedAt DateTime? @updatedAt @map("updated_at")     // Data de atualização automática, mapeada para "updated_at"
+
+  @@map("users")                              // Nome da tabela no banco será "users"
+}
+
+model Refunds {
+  id String @id @default(uuid())              // Identificador único (UUID) como chave primária
+  name String                                 // Nome do reembolso
+  amount Float                                // Valor do reembolso
+  category Category                           // Categoria do reembolso
+  filename String                             // Nome do arquivo associado ao reembolso (ex: nota fiscal)
+
+  userId String @map("user_id")               // Chave estrangeira que referencia o usuário
+  user User @relation(fields: [userId], references: [id]) // Relacionamento com User (muitos para um)
+
+  createdAt DateTime @default(now()) @map("created_at") // Data de criação, mapeada para "created_at"
+  updatedAt DateTime? @updatedAt @map("updated_at")     // Data de atualização automática, mapeada para "updated_at"
+
+  @@map("refunds")                            // Nome da tabela no banco será "refunds"
 }

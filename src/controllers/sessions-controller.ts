@@ -3,9 +3,12 @@
  * Define handlers responsáveis por criar uma sessão (ex.: login) a partir da requisição HTTP.
  */
 
+import type { SignOptions } from "jsonwebtoken";
 import { Request, Response } from "express";
-import { prisma } from "@/database/prisma";
 import { AppError } from "@/utils/AppError";
+import { authConfig } from "@/configs/auth";
+import { prisma } from "@/database/prisma";
+import { sign } from "jsonwebtoken";
 import { compare } from "bcrypt";
 import { z } from "zod";
 
@@ -38,7 +41,22 @@ class SessionsController {
       throw new AppError("E-mail ou senha inválida", 401);
     }
 
-    response.json({ email, password }); // Retorna em JSON os dados validados (apenas para teste).
+    // Obtém a chave secreta e o tempo de expiração do token a partir da configuração de autenticação.
+    const { secret, expiresIn } = authConfig.jwt;
+
+    // Gera um JWT para o usuário autenticado. A função `sign(payload, secret, options)` assina o token com a chave secreta e retorna uma string JWT.
+    const token = sign(
+      { role: user.role }, // payload: insere somente a role do usuário
+      secret as unknown as import("jsonwebtoken").Secret, // chave de assinatura; vem de env e pode ser string | undefined
+      {
+        subject: String(user.id), // identifica o dono do token; precisa ser string
+        expiresIn: expiresIn as SignOptions["expiresIn"], // validade do token, tipado para casar com jsonwebtoken
+      }
+    );
+
+    // Remove a senha do objeto usuário para não retorná-la na resposta.
+    const { password: _, ...userWithoutPassord } = user;
+    response.json({ token, user: userWithoutPassord }); // Retorna o token JWT e os dados do usuário (sem a senha).
   }
 }
 

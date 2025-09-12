@@ -4,7 +4,10 @@
  */
 
 import { Request, Response } from "express";
-import { UserRole } from "@/generated/prisma"; // Importa o enum UserRole gerado pelo Prisma para tipar/validar a função do usuário.
+import { UserRole } from "@prisma/client"; // Importa o enum UserRole gerado pelo Prisma para tipar/validar a função do usuário.
+import { prisma } from "@/database/prisma";
+import { AppError } from "@/utils/AppError";
+import { hash } from "bcrypt";
 import { z } from "zod"; // Importa a biblioteca Zod para validação e transformação de dados de entrada.
 
 class UsersController {
@@ -33,7 +36,28 @@ class UsersController {
     // Realiza o parse e validação do corpo da requisição de acordo com o schema definido acima.
     const { name, email, password, role } = bodySchema.parse(request.body);
 
-    response.json({ name, email, password, role }); // Retorna os dados validados em formato JSON como resposta da requisição.
+    // Verifica no banco se já existe um usuário cadastrado com o mesmo e-mail.
+    const userWithSameEmail = await prisma.user.findFirst({ where: { email } });
+
+    // Caso já exista, lança um erro de aplicação informando o conflito.
+    if (userWithSameEmail) {
+      throw new AppError("Já existe um usuário cadastrado com esse e-mail");
+    }
+
+    // Gera o hash da senha utilizando bcrypt com salt de custo 8.
+    const hashedPassword = await hash(password, 8);
+
+    // Cria o usuário no banco de dados com os dados validados e a senha já criptografada.
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+      },
+    });
+
+    response.status(201).json(); // Retorna status 201 (Created) sem corpo de resposta.
   }
 }
 

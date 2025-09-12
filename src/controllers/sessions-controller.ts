@@ -1,4 +1,4 @@
-/**
+/****
  * Controlador de Sessões (autenticação/login).
  * Define handlers responsáveis por criar uma sessão (ex.: login) a partir da requisição HTTP.
  */

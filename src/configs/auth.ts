@@ -1,4 +1,4 @@
-/**
+/****
  * Configurações de autenticação da aplicação.
  * Define os valores utilizados para gerar e validar tokens JWT (chave secreta e tempo de expiração).
  */

@@ -1,4 +1,7 @@
-// Este arquivo cria e exporta uma instância do PrismaClient, que será usada em toda a aplicação para acessar e manipular o banco de dados.
+/****
+ * Este arquivo cria e exporta uma instância do PrismaClient
+ * que será usada em toda a aplicação para acessar e manipular o banco de dados.
+ */
 
 import { PrismaClient } from "@prisma/client";
 

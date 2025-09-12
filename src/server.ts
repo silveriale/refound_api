@@ -1,4 +1,7 @@
-// Este arquivo é o ponto de entrada do servidor HTTP, ele importa a aplicação configurada no app.ts e inicia a escuta em uma porta específica.
+/****
+ *  Este arquivo é o ponto de entrada do servidor HTTP, ele importa a aplicação configurada no app.ts
+ * e inicia a escuta em uma porta específica.
+ */
 
 import { app } from "@/app";
 

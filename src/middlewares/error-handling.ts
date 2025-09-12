@@ -1,4 +1,8 @@
-// Este arquivo define o middleware global de tratamento de erros do Express, identifica diferentes tipos de erros (AppError, ZodError ou genéricos) e retorna uma resposta HTTP adequada para cada caso.
+/****
+ * Este arquivo define o middleware global de tratamento de erros do Express
+ * identifica diferentes tipos de erros (AppError, ZodError ou genéricos)
+ * e retorna uma resposta HTTP adequada para cada caso.
+ */
 
 import { AppError } from "@/utils/AppError";
 import { ErrorRequestHandler } from "express";

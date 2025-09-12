@@ -1,4 +1,7 @@
-// Este arquivo define a classe AppError, usada para padronizar e lançar erros na aplicação. Ela encapsula uma mensagem e um status HTTP, facilitando o tratamento no middleware de erros.
+/****
+ * Este arquivo define a classe AppError, usada para padronizar e lançar erros na aplicação.
+ * Ela encapsula uma mensagem e um status HTTP, facilitando o tratamento no middleware de erros.
+ */
 
 class AppError {
   message: string; // Propriedade que guarda a mensagem do erro

@@ -1,4 +1,8 @@
-// Este arquivo define o schema do Prisma, que descreve como o ORM gera o cliente, se conecta ao banco de dados e mapeia os modelos de dados (tabelas, enums e relacionamentos).
+/****
+ * Este arquivo define o schema do Prisma, que descreve como o ORM gera o cliente
+ * se conecta ao banco de dados e mapeia os modelos de dados (tabelas, enums e relacionamentos).
+ */
+
 
 generator client {
   provider = "prisma-client-js"   // Gera o cliente Prisma em JavaScript/TypeScript

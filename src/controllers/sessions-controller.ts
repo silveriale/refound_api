@@ -4,6 +4,9 @@
  */
 
 import { Request, Response } from "express";
+import { prisma } from "@/database/prisma";
+import { AppError } from "@/utils/AppError";
+import { compare } from "bcrypt";
 import { z } from "zod";
 
 // Declara o controller de sessões, que agrupa os handlers relacionados à autenticação.
@@ -18,6 +21,22 @@ class SessionsController {
 
     // Realiza o parse e validação do corpo da requisição de acordo com o schema definido acima, extraindo email e password.
     const { email, password } = bodySchema.parse(request.body);
+
+    // Busca no banco de dados o usuário que possua o e-mail informado.
+    const user = await prisma.user.findFirst({ where: { email } });
+
+    // Se nenhum usuário for encontrado, lança um erro de autenticação.
+    if (!user) {
+      throw new AppError("E-mail ou senha inválida", 401);
+    }
+
+    // Compara a senha fornecida com o hash de senha armazenado no banco.
+    const passwordMatched = await compare(password, user.password);
+
+    // Se a senha não corresponder, lança um erro de autenticação.
+    if (!passwordMatched) {
+      throw new AppError("E-mail ou senha inválida", 401);
+    }
 
     response.json({ email, password }); // Retorna em JSON os dados validados (apenas para teste).
   }

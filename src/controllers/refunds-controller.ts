@@ -96,8 +96,43 @@ class RefundsController {
     response.status(201).json(refund);
   }
 
+  /**
+   * Lista os reembolsos cadastrados.
+   *
+   * @param request Objeto da requisição HTTP contendo os parâmetros de consulta (query).
+   * @param response Objeto da resposta HTTP usado para retornar a lista de reembolsos.
+   * @returns Retorna um array JSON de reembolsos encontrados.
+   */
   async index(request: Request, response: Response) {
-    response.json({ message: "ok" });
+    /**
+     * Schema de validação para os parâmetros de consulta.
+     * Permite filtrar os reembolsos pelo nome do usuário.
+     */
+    const querySchema = z.object({
+      name: z.string().optional().default(""),
+    });
+    const { name } = querySchema.parse(request.query);
+    /**
+     * Busca os reembolsos no banco de dados, filtrando pelo nome do usuário se fornecido,
+     * ordenados pela data de criação (mais recentes primeiro),
+     * e incluindo os dados do usuário associado.
+     */
+    const refunds = await prisma.refunds.findMany({
+      where: {
+        user: {
+          name: {
+            contains: name.trim(),
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      include: { user: true },
+    });
+
+    /**
+     * Retorna a lista de reembolsos encontrados em formato JSON.
+     */
+    response.json(refunds);
   }
 }
 

@@ -1,6 +1,8 @@
-/****
- * Este arquivo configura a aplicação Express, adicionando middlewares globais (como JSON e CORS) registrando o middleware de tratamento de erros
- * e exporta a instância do app para que para que o server.ts a utilize com app.listen().
+/**
+ * @file app.ts
+ * @description Configura a aplicação Express.
+ * Adiciona middlewares globais (JSON, CORS), registra as rotas e o middleware de tratamento de erros.
+ * Exporta a instância do app para ser utilizada no server.ts com `app.listen()`.
  */
 
 import express from "express";

@@ -1,9 +1,11 @@
-/**
+/*****
  * @file refunds-controller.ts
  * @description Controlador responsável por gerenciar reembolsos.
  * Define o método `create` que valida os dados da requisição e cria uma solicitação de reembolso.
  */
 import { Request, Response } from "express";
+import { prisma } from "@/database/prisma";
+import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 
 /**
@@ -28,7 +30,7 @@ class RefundsController {
    *
    * @param request Objeto da requisição HTTP contendo os dados enviados pelo cliente.
    * @param response Objeto da resposta HTTP usado para retornar a confirmação.
-   * @returns Retorna uma resposta JSON com uma mensagem de confirmação.
+   * @returns Retorna o objeto JSON do reembolso criado.
    */
   async create(request: Request, response: Response) {
     /**
@@ -67,7 +69,31 @@ class RefundsController {
      */
     const { name, category, amount, filename } = bodySchema.parse(request.body);
 
-    response.json({ message: "ok" });
+    /**
+     * Verifica se o usuário está autenticado.
+     * Caso contrário, lança um erro de "Não autorizado".
+     */
+    if (!request.user?.id) {
+      throw new AppError("Não autorizado");
+    }
+
+    /**
+     * Cria um novo registro de reembolso no banco de dados associado ao usuário autenticado.
+     */
+    const refund = await prisma.refunds.create({
+      data: {
+        name,
+        category,
+        amount,
+        filename,
+        userId: request.user.id,
+      },
+    });
+
+    /**
+     * Retorna status 201 (Created) e o objeto do reembolso criado em formato JSON.
+     */
+    response.status(201).json(refund);
   }
 }
 

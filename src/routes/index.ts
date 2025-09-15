@@ -16,6 +16,8 @@ import { ensureAuthenticated } from "@/middlewares/ensure-authenticated";
  */
 const routes = Router();
 
+//Rotas Públicas
+
 /**
  * Registra o módulo de rotas de usuários no caminho base "/users".
  * Exemplos de endpoints: POST /users.
@@ -27,6 +29,8 @@ routes.use("/users", usersRoutes);
  * Exemplos de endpoints: POST /sessions.
  */
 routes.use("/sessions", sessionsRoutes);
+
+//Rotas privadas
 
 /**
  * Aplica o middleware `ensureAuthenticated` a todas as rotas declaradas

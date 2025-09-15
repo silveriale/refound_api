@@ -30,4 +30,16 @@ refundsRoutes.post(
   refundsController.create
 );
 
+/**
+ * Define a rota HTTP GET "/" para listar todos os reembolsos.
+ * Aplica o middleware `verifyUserAuthorization` para restringir o acesso
+ * a usuários com a role "manager".
+ * Em seguida, chama o método `index` do RefundsController.
+ */
+refundsRoutes.get(
+  "/",
+  verifyUserAuthorization(["manager"]),
+  refundsController.index
+);
+
 export { refundsRoutes };

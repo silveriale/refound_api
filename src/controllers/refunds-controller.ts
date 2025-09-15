@@ -1,8 +1,9 @@
 /*****
  * @file refunds-controller.ts
  * @description Controlador responsável por gerenciar reembolsos.
- * Define o método `create` que valida os dados da requisição e cria uma solicitação de reembolso.
+ * Define os métodos `create` (criação de reembolso) e `index` (listagem com paginação).
  */
+
 import { Request, Response } from "express";
 import { prisma } from "@/database/prisma";
 import { AppError } from "@/utils/AppError";
@@ -97,11 +98,12 @@ class RefundsController {
   }
 
   /**
-   * Lista os reembolsos cadastrados.
+   * Lista os reembolsos cadastrados com suporte a paginação.
    *
-   * @param request Objeto da requisição HTTP contendo os parâmetros de consulta (query).
-   * @param response Objeto da resposta HTTP usado para retornar a lista de reembolsos.
-   * @returns Retorna um array JSON de reembolsos encontrados.
+   * @param request Objeto da requisição HTTP contendo os parâmetros de consulta (query),
+   * incluindo nome do usuário, página atual (`page`) e quantidade por página (`perPage`).
+   * @param response Objeto da resposta HTTP usado para retornar a lista de reembolsos paginados.
+   * @returns Retorna um objeto JSON contendo a lista de reembolsos e os metadados de paginação.
    */
   async index(request: Request, response: Response) {
     /**
@@ -110,14 +112,26 @@ class RefundsController {
      */
     const querySchema = z.object({
       name: z.string().optional().default(""),
+      page: z.coerce.number().optional().default(1),
+      perPage: z.coerce.number().optional().default(10),
     });
-    const { name } = querySchema.parse(request.query);
+
+    const { name, page, perPage } = querySchema.parse(request.query);
+
     /**
-     * Busca os reembolsos no banco de dados, filtrando pelo nome do usuário se fornecido,
-     * ordenados pela data de criação (mais recentes primeiro),
-     * e incluindo os dados do usuário associado.
+     * Calcula o número de registros a serem ignorados com base na página atual e quantidade por página.
+     */
+    const skip = (page - 1) * perPage;
+    /**
+     * Busca os reembolsos no banco de dados aplicando:
+     * - Filtro pelo nome do usuário (se fornecido),
+     * - Paginação com base nos parâmetros `page` e `perPage`,
+     * - Ordenação por data de criação (mais recentes primeiro),
+     * - Inclusão dos dados do usuário associado.
      */
     const refunds = await prisma.refunds.findMany({
+      skip,
+      take: perPage,
       where: {
         user: {
           name: {
@@ -130,9 +144,35 @@ class RefundsController {
     });
 
     /**
-     * Retorna a lista de reembolsos encontrados em formato JSON.
+     * Conta o número total de registros que correspondem ao filtro aplicado.
      */
-    response.json(refunds);
+    const totalRecords = await prisma.refunds.count({
+      where: {
+        user: {
+          name: {
+            contains: name.trim(),
+          },
+        },
+      },
+    });
+
+    /**
+     * Calcula o total de páginas a partir da quantidade total de registros e do tamanho da página.
+     */
+    const totalPages = Math.ceil(totalRecords / perPage);
+
+    /**
+     * Retorna a lista de reembolsos encontrados e informações de paginação em formato JSON.
+     */
+    response.json({
+      refunds,
+      pagination: {
+        page,
+        perPage,
+        totalRecords,
+        totalPages: totalPages > 0 ? totalPages : 1,
+      },
+    });
   }
 }
 

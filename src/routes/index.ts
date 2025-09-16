@@ -9,6 +9,7 @@ import { usersRoutes } from "./users-routes";
 import { sessionsRoutes } from "./sessions-routes";
 import { refundsRoutes } from "./refunds-routes";
 import { ensureAuthenticated } from "@/middlewares/ensure-authenticated";
+import { uploadsRoutes } from "./uploads-routes";
 
 /**
  * Instância principal do Router do Express que irá agregar
@@ -43,5 +44,11 @@ routes.use(ensureAuthenticated);
  * Exemplos de endpoints: POST /refunds.
  */
 routes.use("/refunds", refundsRoutes);
+
+/**
+ * Registra o módulo de rotas de upload de arquivos no caminho base "/uploads".
+ * Exemplos de endpoints: POST /uploads.
+ */
+routes.use("/uploads", uploadsRoutes);
 
 export { routes };

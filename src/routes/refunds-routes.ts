@@ -42,4 +42,15 @@ refundsRoutes.get(
   refundsController.index
 );
 
+/**
+ * Define a rota HTTP GET "/:id" para buscar os detalhes de um reembolso específico.
+ * Aplica o middleware `verifyUserAuthorization` para restringir o acesso
+ * a usuários com as roles "employee" e "manager".
+ * Em seguida, chama o método `show` do RefundsController.
+ */
+refundsRoutes.get(
+  "/:id",
+  verifyUserAuthorization(["employee", "manager"]),
+  refundsController.show
+);
 export { refundsRoutes };

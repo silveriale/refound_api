@@ -175,6 +175,13 @@ class RefundsController {
     });
   }
 
+  /**
+   * Busca e retorna os detalhes de um reembolso específico.
+   *
+   * @param request Objeto da requisição HTTP contendo o parâmetro `id` do reembolso.
+   * @param response Objeto da resposta HTTP usado para retornar os dados do reembolso.
+   * @returns Retorna um objeto JSON com os dados do reembolso e informações do usuário associado.
+   */
   async show(request: Request, response: Response) {
     const paramsSchema = z.object({
       id: z.string().uuid(),

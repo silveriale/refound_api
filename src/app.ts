@@ -10,11 +10,14 @@ import cors from "cors"; // Importa o middleware CORS para permitir requisiçõe
 
 import { routes } from "./routes";
 import { errorHandling } from "@/middlewares/error-handling"; // Middleware personalizado de tratamento de erros
+import uploadConfig from "@/configs/upload";
 
 const app = express(); // Cria a instância da aplicação Express
 
 app.use(cors()); // habilita CORS, permitindo que clientes externos acessem a API
 app.use(express.json()); // permite que o servidor entenda requisições com corpo JSON
+
+app.use("/uploads", express.static(uploadConfig.UPLOADS_FOLDER));
 
 app.use(routes); // Monta o roteador raiz da aplicação (todas as rotas registradas)
 app.use(errorHandling); // registra o middleware de tratamento de erros (precisa ficar após as rotas)

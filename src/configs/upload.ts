@@ -13,20 +13,25 @@ import crypto from "node:crypto";
 const TMP_FOLDER = path.resolve(__dirname, "..", "..", "tmp");
 
 /**
- * Diretório final onde os arquivos enviados serão movidos após processamento.
- * É relativo ao TMP_FOLDER.
+ * Subdiretório específico dentro de TMP_FOLDER usado para armazenar permanentemente os arquivos enviados.
+ * Após o processamento, os arquivos enviados são movidos para este local.
  */
-const UPLOADS_FOLDER = path.relative(TMP_FOLDER, "uploads");
+const UPLOADS_FOLDER = path.resolve(__dirname, "..", "..", "tmp", "uploads");
 
+/**
+ * Tamanho máximo permitido para upload de arquivos (em megabytes).
+ * Este valor representa o limite em MB.
+ */
 const MAX_SIZE = 3;
 /**
  * Tamanho máximo permitido para upload de arquivos (em bytes).
- * Aqui está definido como 3MB.
+ * O valor em MB é convertido para bytes usando o multiplicador 1024 * 1024.
  */
 const MAX_FILE_SIZE = 1024 * 1024 * MAX_SIZE;
 
 /**
  * Tipos MIME de imagens aceitos para upload.
+ * Apenas formatos JPEG, JPG e PNG são permitidos.
  */
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
